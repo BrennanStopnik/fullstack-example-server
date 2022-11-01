@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+const { db } = require("../mongo");
+
 const sampleBlogs = [
   {
     createdAt: "2022-06-30T04:03:07.069Z",
@@ -40,11 +42,19 @@ const sampleBlogs = [
 ];
 
 /* GET blogs listing. */
-router.get('/all', function(req, res, next) {
-  res.send({
-    success: true,
-    blogs: sampleBlogs
-  });
+router.get('/all', async (req, res, next) => {
+  try{
+    const allBlogs = await db().collection("posts").find({}).toArray()
+    res.json({
+      success: true,
+      blogs: allBlogs
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      error: err.toString()
+    })
+  }
 });
 
 module.exports = router;
