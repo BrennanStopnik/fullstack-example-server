@@ -1,4 +1,5 @@
 var express = require('express');
+const { uuid } = require("uuidv4");
 var router = express.Router();
 
 const { db } = require("../mongo");
@@ -49,12 +50,53 @@ router.get('/all', async (req, res, next) => {
       success: true,
       blogs: allBlogs
     });
-  } catch (err) {
+  } catch (error) {
     res.json({
       success: false,
-      error: err.toString()
+      error: error.toString()
     })
   }
 });
+
+router.get("/get-one/:id", async (req, res) => {
+  try{
+    const idParam = req.params.id;
+
+    const blog = await db().collection("posts").findOne({
+      id: idParam
+    })
+    res.json({
+      success: true,
+      blog: blog
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      error: error.toString()
+    })
+  }
+})
+
+router.post("/create-one", async (req,res) => {
+  try {
+    const newBlog = {
+      ...req.body,
+      createdAt: new Date(),
+      lastModified: new Date(),
+      id: uuid()
+    }
+    const result= await db().collection("post").insertOne(newBlog)
+    console.log(result)
+    res.json({
+      success: true
+    })
+
+  } catch (error) {
+    res.json({
+      success: false,
+      error: error.toString()
+    })
+  }
+})
 
 module.exports = router;
