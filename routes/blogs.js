@@ -45,10 +45,11 @@ const sampleBlogs = [
 /* GET blogs listing. */
 router.get('/all', async (req, res, next) => {
   try{
-    const allBlogs = await db().collection("posts").find({}).toArray()
+    const blogs = await db().collection("posts").find({}).toArray()
+    console.log(blogs)
     res.json({
       success: true,
-      blogs: allBlogs
+      blogs
     });
   } catch (error) {
     res.json({
@@ -85,6 +86,7 @@ router.post("/create-one", async (req, res) => {
       lastModified: new Date(),
       id: uuid()
     }
+    console.log(newBlog)
     const result= await db().collection("post").insertOne(newBlog)
     console.log(result)
     res.json({
