@@ -77,7 +77,7 @@ router.get("/get-one/:id", async (req, res) => {
   }
 })
 
-router.post("/create-one", async (req,res) => {
+router.post("/create-one", async (req, res) => {
   try {
     const newBlog = {
       ...req.body,
@@ -91,6 +91,42 @@ router.post("/create-one", async (req,res) => {
       success: true
     })
 
+  } catch (error) {
+    res.json({
+      success: false,
+      error: error.toString()
+    })
+  }
+})
+
+router.put("update-one", async (req, res) => {
+  try {
+
+    const idParam = req.params.id
+    const text= req.body.text
+    const title= req.body.title
+    const author= req.body.author
+    const categories= req.body.categories
+    const lastModified= new Date()
+
+    const blog = await db()
+      .collection("posts")
+      .update(
+        {id: idParam}, 
+        {$set: {
+          text: text,
+          title: title,
+          author: author,
+          categories: categories,
+          lastModified: lastModified
+        },
+      }   
+    );
+
+    res.json({
+      success: true,
+      blog: blog
+    })
   } catch (error) {
     res.json({
       success: false,
