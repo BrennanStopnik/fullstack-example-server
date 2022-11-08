@@ -101,7 +101,7 @@ router.post("/create-one", async (req, res) => {
   }
 })
 
-router.put("update-one", async (req, res) => {
+router.put("/update-one/:id", async (req, res) => {
   try {
 
     const idParam = req.params.id
